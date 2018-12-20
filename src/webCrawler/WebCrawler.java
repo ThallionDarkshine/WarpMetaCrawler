@@ -3,11 +3,10 @@ package webCrawler;
 import databases.CardDatabase;
 import databases.DeckDatabase;
 import databases.MemberDatabase;
-import gameData.Card;
-import gameData.Deck;
+import gameData.TeslCardDesc;
+import gameData.TeslDeckDesc;
 import gameData.Member;
 import javafx.util.Callback;
-import org.apache.commons.text.WordUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -70,18 +69,18 @@ public class WebCrawler {
             matcher.find();
             String name = matcher.group(1);
 
-            Map<Card, Integer> cards = new HashMap<>();
+            Map<TeslCardDesc, Integer> cards = new HashMap<>();
             matcher = WM_DECK_CARD_REGEX.matcher(deckData);
             while (matcher.find()) {
                 String cardName = matcher.group(2).trim();
 
                 int count = Integer.parseInt(matcher.group(1));
-                Card card = CardDatabase.get(cardName);
+                TeslCardDesc card = CardDatabase.get(cardName);
 
                 cards.put(card, count);
             }
 
-            Deck deck = new Deck(name, cards);
+            TeslDeckDesc deck = new TeslDeckDesc(name, cards);
             deck.addPilot(member);
 
             DeckDatabase.add(deck);
@@ -155,7 +154,7 @@ public class WebCrawler {
 
             // Get all the simple properties set up first
             String name = properties.get("Name").text();
-            Card.Type type = Card.Type.valueOf(properties.get("Type").text().toUpperCase());
+            TeslCardDesc.Type type = TeslCardDesc.Type.valueOf(properties.get("Type").text().toUpperCase());
             String race = properties.get("Race").text();
             int cost = Integer.parseInt(properties.get("Magicka Cost").text());
             int attack = properties.containsKey("Attack") ? Integer.parseInt(properties.get("Attack").text()) : -1;
@@ -167,13 +166,13 @@ public class WebCrawler {
             // Next, determine whether the card is unique before dealing with rarity
             String[] rarityParts = properties.get("Rarity").text().split("\\s\\-\\s");
             boolean unique = rarityParts.length == 2;
-            Card.Rarity rarity = Card.Rarity.valueOf(rarityParts[0].toUpperCase());
+            TeslCardDesc.Rarity rarity = TeslCardDesc.Rarity.valueOf(rarityParts[0].toUpperCase());
 
             // Next, going through the html for attributes
-            Set<Card.Attribute> attributes = new HashSet<>();
+            Set<TeslCardDesc.Attribute> attributes = new HashSet<>();
             Matcher matcher = LD_CARD_ATTRIBUTE_REGEX.matcher(properties.get("Attributes").html());
             while (matcher.find()) {
-                attributes.add(Card.Attribute.valueOf(matcher.group(1).toUpperCase()));
+                attributes.add(TeslCardDesc.Attribute.valueOf(matcher.group(1).toUpperCase()));
             }
 
             // Next, finding percent usage
@@ -181,7 +180,7 @@ public class WebCrawler {
             matcher.find();
             int percentUsage = Integer.parseInt(matcher.group(1));
 
-            Card card = new Card(name, rarity, unique, type, attributes, race, cost, attack, health, set, text, keywords, percentUsage);
+            TeslCardDesc card = new TeslCardDesc(name, rarity, unique, type, attributes, race, cost, attack, health, set, text, keywords, percentUsage);
 
             CardDatabase.add(card);
 

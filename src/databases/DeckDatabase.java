@@ -1,8 +1,8 @@
 package databases;
 
 import analysis.clustering.Clusterable;
-import gameData.Deck;
-import gameData.Member;
+import gameData.ClusterableTeslDeck;
+import gameData.TeslDeckDesc;
 
 import java.util.*;
 
@@ -10,10 +10,10 @@ import java.util.*;
  * Created by ThallionDarkshine on 9/12/2018.
  */
 public class DeckDatabase {
-    private static List<Deck> decks = new ArrayList<>();
+    private static List<TeslDeckDesc> decks = new ArrayList<>();
 
-    public static void add(Deck deck) {
-        for (Deck d : decks) {
+    public static void add(TeslDeckDesc deck) {
+        for (TeslDeckDesc d : decks) {
             if (d.matches(deck)) {
                 d.merge(deck);
 
@@ -24,15 +24,15 @@ public class DeckDatabase {
         decks.add(deck);
     }
 
-    public static List<Deck> getDecks() {
+    public static List<TeslDeckDesc> getDecks() {
         return Collections.unmodifiableList(decks);
     }
 
     public static List<Map.Entry<List<Float>, Clusterable>> buildDecksMatrix() {
         List<Map.Entry<List<Float>, Clusterable>> decksMatrix = new Vector<>();
 
-        for (Deck d : decks) {
-            decksMatrix.add(new AbstractMap.SimpleEntry<>(CardDatabase.buildDeckVector(d), d));
+        for (TeslDeckDesc d : decks) {
+            decksMatrix.add(new AbstractMap.SimpleEntry<>(CardDatabase.buildDeckVector(d), new ClusterableTeslDeck(d)));
         }
 
         return decksMatrix;

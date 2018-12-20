@@ -1,22 +1,22 @@
 package analysis.cardUsageAnalysis;
 
-import gameData.Card;
+import gameData.TeslCardDesc;
 
 /**
  * Created by ThallionDarkshine on 9/12/2018.
  */
 public class CardUsageData {
-    private Card card;
+    private TeslCardDesc card;
     private int deckCount, eligibleDeckCount, totalCopies;
 
-    public CardUsageData(Card card) {
+    public CardUsageData(TeslCardDesc card) {
         this.card = card;
         deckCount = 0;
         eligibleDeckCount = 0;
         totalCopies = 0;
     }
 
-    public CardUsageData(Card card, int deckCount, int eligibleDeckCount, int totalCopies) {
+    public CardUsageData(TeslCardDesc card, int deckCount, int eligibleDeckCount, int totalCopies) {
         this.card = card;
         this.deckCount = deckCount;
         this.eligibleDeckCount = eligibleDeckCount;

@@ -2,29 +2,31 @@ package analysis.clustering;/**
  * Created by ThallionDarkshine on 9/13/2018.
  */
 
+import analysis.CardPairingData;
+import analysis.CardSynergyAnalysis;
 import analysis.cardUsageAnalysis.CardUsageAnalysis;
+import data.DeckDesc;
 import databases.CardDatabase;
 import databases.DeckDatabase;
-import gameData.Deck;
+import gameData.ClusterableTeslDeck;
+import gameData.TeslCardDesc;
+import gameData.TeslDeckDesc;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import webCrawler.WebCrawler;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class DendrogramDisplay extends Application {
@@ -34,9 +36,12 @@ public class DendrogramDisplay extends Application {
 
         WebCrawler.ldPullCardsData("https://www.legends-decks.com/cards");
 
+        WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-weekly-43");
+        WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-weekly-42");
+        WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-weekly-41");
         WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-weekly-40");
-//        WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-weekly-39");
-//        WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-na-38");
+        WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-weekly-39");
+        WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-na-38");
 //        WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-na-37");
 //        WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-eu-10");
 //        WebCrawler.wmPullTournamentData("https://warpmeta.com/esport-tournament-info/?tournament=tesl-na-36");
@@ -58,6 +63,39 @@ public class DendrogramDisplay extends Application {
 //        WebCrawler.wmPullTournamentData("https://warpmeta.com/tournament-info/?tournament=tesl-eu-1");
 
         CardUsageAnalysis.analyzeCardUsage(CardDatabase.getCards().values(), DeckDatabase.getDecks());
+
+        /*Random rng = new Random();
+        List<CardPairingData<TeslCardDesc>> pairings = new ArrayList<>();
+        *//*for (int i = 0;i < 10;++i) {
+            TeslCardDesc c1 = CardDatabase.getRandom(rng);
+            TeslCardDesc c2;
+
+            do {
+                c2 = CardDatabase.getRandom(rng);
+            } while (c1 == c2);
+
+            pairings.add(new CardPairingData<>(c1, c2));
+        }*//*
+        pairings.add(new CardPairingData<>(CardDatabase.get("Ash Berserker"), CardDatabase.get("Fifth Legion Trainer")));
+        pairings.add(new CardPairingData<>(CardDatabase.get("Sentinel Battlemace"), CardDatabase.get("Shrieking Harpy")));
+        pairings.add(new CardPairingData<>(CardDatabase.get("Suran Pawnbroker"), CardDatabase.get("Sharp-Eyed Ashkhan")));
+        pairings.add(new CardPairingData<>(CardDatabase.get("Marked Man"), CardDatabase.get("Fifth Legion Trainer")));
+        pairings.add(new CardPairingData<>(CardDatabase.get("Hlaalu Sharpshooter"), CardDatabase.get("Nord Firebrand")));
+        pairings.add(new CardPairingData<>(CardDatabase.get("Barrow Stalker"), CardDatabase.get("Ald Velothi Assassin")));
+        pairings.add(new CardPairingData<>(CardDatabase.get("Tree Minder"), CardDatabase.get("Barrow Stalker")));
+        pairings.add(new CardPairingData<>(CardDatabase.get("Cloudrest Illusionist"), CardDatabase.get("Ahnassi")));
+
+        for (TeslDeckDesc deck : DeckDatabase.getDecks()) {
+            for (CardPairingData pairing : pairings) {
+                pairing.addDeckData(deck);
+            }
+        }
+
+        for (CardPairingData pairing : pairings) {
+            pairing.outputBasicAnalysis();
+        }*/
+
+        CardSynergyAnalysis.analyzeCardSynergy(new ArrayList<>(DeckDatabase.getDecks()));
 
         launch(args);
 
@@ -166,7 +204,7 @@ public class DendrogramDisplay extends Application {
 
                     c.ios(cluster -> {
                         if (cluster.size == 1) {
-                            Deck d = (Deck) cluster.data;
+                            TeslDeckDesc d = ((ClusterableTeslDeck) cluster.data).deck;
 
                             if (cluster.parent != null) {
                                 System.out.println(cluster.parent.height);
@@ -181,7 +219,7 @@ public class DendrogramDisplay extends Application {
 
                     System.out.println("\t\t-----");
 
-                    System.out.println();
+                    /*System.out.println();
                     System.out.println("Enter color: ");
                     String colorName = scanner.nextLine();
                     Paint paint = Color.valueOf(colorName.toUpperCase());
@@ -194,7 +232,7 @@ public class DendrogramDisplay extends Application {
 
                             return 0;
                         });
-                    });
+                    });*/
                 }
             }
         });

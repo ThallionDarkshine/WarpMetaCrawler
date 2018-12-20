@@ -1,12 +1,15 @@
 package gameData;
 
+import data.Card;
+import data.CardDesc;
+
 import java.util.List;
 import java.util.Set;
 
 /**
  * Created by ThallionDarkshine on 9/12/2018.
  */
-public class Card {
+public class TeslCardDesc extends CardDesc {
     public enum Rarity {
         COMMON, RARE, EPIC, LEGENDARY
     }
@@ -19,7 +22,6 @@ public class Card {
         STRENGTH, INTELLIGENCE, WILLPOWER, AGILITY, ENDURANCE, NEUTRAL
     }
 
-    private String name;
     private Rarity rarity;
     private boolean unique;
     private Type type;
@@ -33,8 +35,9 @@ public class Card {
     private List<String> keywords;
     private int percentUsage;
 
-    public Card(String name, Rarity rarity, boolean unique, Type type, Set<Attribute> attributes, String race, int cost, int attack, int health, String set, String text, List<String> keywords, int percentUsage) {
-        this.name = name;
+    public TeslCardDesc(String name, Rarity rarity, boolean unique, Type type, Set<Attribute> attributes, String race, int cost, int attack, int health, String set, String text, List<String> keywords, int percentUsage) {
+        super(name);
+
         this.rarity = rarity;
         this.unique = unique;
         this.type = type;
@@ -47,10 +50,6 @@ public class Card {
         this.text = text;
         this.keywords = keywords;
         this.percentUsage = percentUsage;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Rarity getRarity() {
@@ -99,5 +98,9 @@ public class Card {
 
     public int getPercentUsage() {
         return percentUsage;
+    }
+
+    public Card instantiate() {
+        return null;
     }
 }

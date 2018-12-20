@@ -1,7 +1,7 @@
 package analysis.cardUsageAnalysis;
 
-import gameData.Card;
-import gameData.Deck;
+import gameData.TeslCardDesc;
+import gameData.TeslDeckDesc;
 
 import java.util.*;
 
@@ -9,16 +9,16 @@ import java.util.*;
  * Created by ThallionDarkshine on 9/12/2018.
  */
 public class CardUsageAnalysis {
-    public static void analyzeCardUsage(Collection<Card> cards, Collection<Deck> decks) {
-        Map<Card, CardUsageData> cardUsageData = new HashMap<>();
+    public static void analyzeCardUsage(Collection<TeslCardDesc> cards, Collection<TeslDeckDesc> decks) {
+        Map<TeslCardDesc, CardUsageData> cardUsageData = new HashMap<>();
 
-        for (Card c : cards) {
+        for (TeslCardDesc c : cards) {
             cardUsageData.put(c, new CardUsageData(c));
         }
 
-        for (Deck d : decks) {
-            for (Map.Entry<Card, CardUsageData> cardEntry : cardUsageData.entrySet()) {
-                Card card = cardEntry.getKey();
+        for (TeslDeckDesc d : decks) {
+            for (Map.Entry<TeslCardDesc, CardUsageData> cardEntry : cardUsageData.entrySet()) {
+                TeslCardDesc card = cardEntry.getKey();
                 CardUsageData data = cardEntry.getValue();
 
                 boolean eligible = d.getAttributes().containsAll(card.getAttributes());
@@ -28,15 +28,15 @@ public class CardUsageAnalysis {
             }
         }
 
-        List<Map.Entry<Card, CardUsageData>> sortedData = new ArrayList<>(cardUsageData.entrySet());
+        List<Map.Entry<TeslCardDesc, CardUsageData>> sortedData = new ArrayList<>(cardUsageData.entrySet());
         sortedData.sort((o1, o2) -> Float.compare(o1.getValue().getPercentUsage(), o2.getValue().getPercentUsage()));
 
         List<String> cardNames = new ArrayList<>();
         List<Integer> cardDeckCounts = new ArrayList<>(), cardEligibleDeckCounts = new ArrayList<>();
         List<Float> cardDeckPercentages = new ArrayList<>(), cardAverageUsages = new ArrayList<>();
 
-        for (Map.Entry<Card, CardUsageData> cardEntry : sortedData) {
-            Card card = cardEntry.getKey();
+        for (Map.Entry<TeslCardDesc, CardUsageData> cardEntry : sortedData) {
+            TeslCardDesc card = cardEntry.getKey();
             CardUsageData data = cardEntry.getValue();
 
             if (data.getDeckCount() == 0) continue;

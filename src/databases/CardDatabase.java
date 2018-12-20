@@ -3,8 +3,8 @@ package databases;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
-import gameData.Card;
-import gameData.Deck;
+import gameData.TeslCardDesc;
+import gameData.TeslDeckDesc;
 
 import java.io.*;
 import java.net.URLEncoder;
@@ -15,10 +15,10 @@ import java.util.*;
  * Created by ThallionDarkshine on 9/12/2018.
  */
 public class CardDatabase {
-    private static Map<String, Card> cards = new HashMap<>();
-    private static Map<Card, Integer> cardIndices = new HashMap<>();
+    private static Map<String, TeslCardDesc> cards = new HashMap<>();
+    private static Map<TeslCardDesc, Integer> cardIndices = new HashMap<>();
 
-    public static void add(Card card) {
+    public static void add(TeslCardDesc card) {
         cards.put(card.getName(), card);
         cardIndices.put(card, cardIndices.size());
     }
@@ -27,7 +27,7 @@ public class CardDatabase {
         return cards.containsKey(cardName);
     }
 
-    public static Card get(String cardName) {
+    public static TeslCardDesc get(String cardName) {
         if (has(cardName)) {
             return cards.get(cardName);
         } else {
@@ -43,14 +43,14 @@ public class CardDatabase {
         }
     }
 
-    public static Map<String, Card> getCards() {
+    public static Map<String, TeslCardDesc> getCards() {
         return Collections.unmodifiableMap(cards);
     }
 
     public static void dumpData(File dir) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        for (Card c : cards.values()) {
+        for (TeslCardDesc c : cards.values()) {
             try {
                 File cardFile = new File(dir, URLEncoder.encode(c.getName(), StandardCharsets.UTF_8.toString()) + ".json");
 
@@ -70,7 +70,7 @@ public class CardDatabase {
             try {
                 Gson gson = new Gson();
                 JsonReader reader = new JsonReader(new FileReader(f));
-                Card card = gson.fromJson(reader, Card.class);
+                TeslCardDesc card = gson.fromJson(reader, TeslCardDesc.class);
 
                 add(card);
             } catch (FileNotFoundException e) {
@@ -79,17 +79,23 @@ public class CardDatabase {
         }
     }
 
-    public static List<Float> buildDeckVector(Deck deck) {
+    public static List<Float> buildDeckVector(TeslDeckDesc deck) {
         List<Float> deckVector = new ArrayList<>();
 
         for (int i = 0;i < cardIndices.size();++i) {
             deckVector.add(0f);
         }
 
-        for (Map.Entry<Card, Integer> cardEntry : deck.getCards().entrySet()) {
+        for (Map.Entry<TeslCardDesc, Integer> cardEntry : deck.getCards().entrySet()) {
             deckVector.set(cardIndices.get(cardEntry.getKey()), (float) cardEntry.getValue());
         }
 
         return deckVector;
+    }
+
+    public static TeslCardDesc getRandom(Random rng) {
+        List<TeslCardDesc> cardsList = new ArrayList<>(cards.values());
+
+        return cardsList.get(rng.nextInt(cardsList.size()));
     }
 }
